@@ -49,6 +49,57 @@
             backdrop-filter: blur(10px);
         }
 
+        .method-selector {
+            background: linear-gradient(45deg, #e3f2fd 0%, #f8f9ff 100%);
+            border: 2px solid #2196f3;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .method-selector h3 {
+            color: #1565c0;
+            margin-bottom: 15px;
+        }
+
+        .method-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .method-btn {
+            background: linear-gradient(45deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .method-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .method-btn.active {
+            background: linear-gradient(45deg, #4caf50 0%, #388e3c 100%);
+        }
+
+        .transcription-method {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .transcription-method.active {
+            display: block;
+        }
+
         .free-notice {
             background: linear-gradient(45deg, #e8f5e8 0%, #f1f8f1 100%);
             border: 2px solid #4caf50;
@@ -60,21 +111,6 @@
 
         .free-notice h3 {
             color: #2e7d32;
-            margin-bottom: 15px;
-        }
-
-        .model-loading {
-            background: linear-gradient(45deg, #fff9e6 0%, #fff3d9 100%);
-            border: 2px solid #ffb347;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            text-align: center;
-            display: none;
-        }
-
-        .model-loading h3 {
-            color: #e65100;
             margin-bottom: 15px;
         }
 
@@ -99,12 +135,6 @@
             border-color: #764ba2;
             background: linear-gradient(45deg, #e8f0ff 0%, #d4e3ff 100%);
             transform: scale(1.02);
-        }
-
-        .upload-zone.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            pointer-events: none;
         }
 
         .upload-icon {
@@ -201,11 +231,6 @@
             color: #1976d2;
         }
 
-        .status-loading {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
         .status-processing {
             background: #fff3e0;
             color: #f57c00;
@@ -245,32 +270,6 @@
             margin: 30px 0;
         }
 
-        .transcription-options {
-            background: #f8f9ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .option-group {
-            margin: 15px 0;
-        }
-
-        .option-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .option-group select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
         .download-section {
             margin-top: 30px;
             padding: 20px;
@@ -284,20 +283,31 @@
             margin: 10px;
         }
 
-        .model-progress {
-            width: 100%;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            margin: 15px 0;
-            overflow: hidden;
+        .browser-speech {
+            background: #f0f8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
         }
 
-        .model-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ffb347, #ffa726);
-            transition: width 0.3s ease;
-            width: 0%;
+        .browser-speech h4 {
+            color: #1565c0;
+            margin-bottom: 15px;
+        }
+
+        .speech-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .speech-controls select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
         @media (max-width: 768px) {
@@ -322,6 +332,10 @@
             .file-info {
                 width: 100%;
             }
+
+            .method-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -329,54 +343,61 @@
     <div class="container">
         <div class="header">
             <h1>🆓 Free Batch MP3 to SRT Converter</h1>
-            <p>Convert audio files to subtitles completely free using AI in your browser</p>
+            <p>Convert audio files to subtitles completely free using browser-based AI</p>
         </div>
 
         <div class="main-card">
-            <div class="free-notice">
-                <h3>✨ 100% Free & Private</h3>
-                <p>No API keys needed • Runs entirely in your browser • No data sent to servers • Works offline</p>
-            </div>
-
-            <div class="model-loading" id="modelLoading">
-                <h3>🤖 Loading AI Model...</h3>
-                <p>Downloading Whisper AI model for the first time. This may take a few minutes but only happens once.</p>
-                <div class="model-progress">
-                    <div class="model-progress-fill" id="modelProgress"></div>
-                </div>
-                <p id="modelStatus">Preparing...</p>
-            </div>
-
-            <div class="transcription-options">
-                <h4>🎛️ Transcription Settings</h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div class="option-group">
-                        <label for="languageSelect">Language:</label>
-                        <select id="languageSelect">
-                            <option value="en">English</option>
-                            <option value="es">Spanish</option>
-                            <option value="fr">French</option>
-                            <option value="de">German</option>
-                            <option value="it">Italian</option>
-                            <option value="pt">Portuguese</option>
-                            <option value="ru">Russian</option>
-                            <option value="ja">Japanese</option>
-                            <option value="ko">Korean</option>
-                            <option value="zh">Chinese</option>
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label for="modelSize">Model Size:</label>
-                        <select id="modelSize">
-                            <option value="tiny">Tiny (~39MB, fastest)</option>
-                            <option value="base" selected>Base (~74MB, balanced)</option>
-                            <option value="small">Small (~244MB, better quality)</option>
-                        </select>
-                    </div>
+            <div class="method-selector">
+                <h3>Choose Your Transcription Method</h3>
+                <p>Select the best option based on your browser and needs:</p>
+                <div class="method-buttons">
+                    <button class="method-btn active" onclick="selectMethod('browser')">
+                        🌐 Browser Speech (Fast & Free)
+                    </button>
+                    <button class="method-btn" onclick="selectMethod('manual')">
+                        ✏️ Manual Template (Always Works)
+                    </button>
                 </div>
             </div>
 
-            <div class="upload-zone" id="uploadZone" onclick="handleUploadClick()">
+            <!-- Browser Speech Recognition Method -->
+            <div class="transcription-method active" id="browserMethod">
+                <div class="free-notice">
+                    <h3>✨ Browser Speech Recognition</h3>
+                    <p>Uses your browser's built-in speech recognition • Works in Chrome, Edge • Completely free</p>
+                </div>
+
+                <div class="browser-speech">
+                    <h4>🎤 Speech Recognition Settings</h4>
+                    <div class="speech-controls">
+                        <label>Language:</label>
+                        <select id="speechLang">
+                            <option value="en-US">English (US)</option>
+                            <option value="en-GB">English (UK)</option>
+                            <option value="es-ES">Spanish</option>
+                            <option value="fr-FR">French</option>
+                            <option value="de-DE">German</option>
+                            <option value="it-IT">Italian</option>
+                            <option value="pt-BR">Portuguese</option>
+                            <option value="ru-RU">Russian</option>
+                            <option value="ja-JP">Japanese</option>
+                            <option value="ko-KR">Korean</option>
+                            <option value="zh-CN">Chinese</option>
+                        </select>
+                    </div>
+                    <p><strong>Note:</strong> Works best with Chrome/Edge browsers. Audio will play while being transcribed.</p>
+                </div>
+            </div>
+
+            <!-- Manual Template Method -->
+            <div class="transcription-method" id="manualMethod">
+                <div class="free-notice">
+                    <h3>✨ Manual Template Generator</h3>
+                    <p>Creates SRT template based on audio duration • Add your own text • Works in any browser</p>
+                </div>
+            </div>
+
+            <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
                 <div class="upload-icon">📁</div>
                 <div class="upload-text">Drop audio files here or click to browse</div>
                 <div class="upload-subtext">Supports MP3, WAV, M4A, OGG • Free unlimited processing</div>
@@ -395,6 +416,9 @@
                 <button class="btn" id="clearBtn" onclick="clearFiles()">
                     🗑️ Clear All
                 </button>
+                <button class="btn" onclick="testDownload()" style="background: #ff5722;">
+                    🧪 Test Download
+                </button>
             </div>
 
             <div class="file-list" id="fileList"></div>
@@ -409,30 +433,52 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2"></script>
     <script>
-        // Configure transformers.js
-        const { pipeline, env } = Transformers;
-        
         let selectedFiles = [];
         let processedFiles = [];
         let currentProcessing = 0;
-        let whisperPipeline = null;
-        let modelLoading = false;
-
-        // Global variables for other functions
-        window.selectedFiles = selectedFiles;
-        window.processedFiles = processedFiles;
+        let currentMethod = 'browser';
+        let recognition = null;
+        let currentAudio = null;
 
         const fileInput = document.getElementById('fileInput');
-        const uploadZone = document.getElementById('uploadZone');
+        const uploadZone = document.querySelector('.upload-zone');
         const fileList = document.getElementById('fileList');
         const startBtn = document.getElementById('startBtn');
-        const modelLoadingDiv = document.getElementById('modelLoading');
 
+        // Initialize speech recognition if available
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+        }
+
+        // Method selection
+        function selectMethod(method) {
+            currentMethod = method;
+            
+            // Update buttons
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide method panels
+            document.querySelectorAll('.transcription-method').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            if (method === 'browser') {
+                document.getElementById('browserMethod').classList.add('active');
+            } else if (method === 'manual') {
+                document.getElementById('manualMethod').classList.add('active');
+            }
+        }
+
+        // File handling
         fileInput.addEventListener('change', handleFileSelect);
 
-        // Drag and drop handlers
         uploadZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadZone.classList.add('dragover');
@@ -445,64 +491,12 @@
         uploadZone.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadZone.classList.remove('dragover');
-            if (uploadZone.classList.contains('disabled')) return;
-            
             const files = Array.from(e.dataTransfer.files).filter(file => 
                 file.type.startsWith('audio/') || 
                 /\.(mp3|wav|m4a|ogg|flac|webm)$/i.test(file.name)
             );
             addFiles(files);
         });
-
-        async function loadWhisperModel() {
-            if (whisperPipeline || modelLoading) return whisperPipeline;
-            
-            modelLoading = true;
-            modelLoadingDiv.style.display = 'block';
-            uploadZone.classList.add('disabled');
-            
-            const modelSize = document.getElementById('modelSize').value;
-            const modelName = `Xenova/whisper-${modelSize}`;
-            
-            try {
-                document.getElementById('modelStatus').textContent = 'Downloading AI model...';
-                
-                // Create pipeline with progress callback
-                whisperPipeline = await pipeline('automatic-speech-recognition', modelName, {
-                    progress_callback: (data) => {
-                        if (data.status === 'downloading') {
-                            const progress = Math.round((data.loaded / data.total) * 100);
-                            document.getElementById('modelProgress').style.width = progress + '%';
-                            document.getElementById('modelStatus').textContent = 
-                                `Downloading: ${progress}% (${Math.round(data.loaded/1024/1024)}MB / ${Math.round(data.total/1024/1024)}MB)`;
-                        } else if (data.status === 'loading') {
-                            document.getElementById('modelStatus').textContent = 'Loading model into memory...';
-                            document.getElementById('modelProgress').style.width = '100%';
-                        }
-                    }
-                });
-                
-                document.getElementById('modelStatus').textContent = 'Model ready! ✅';
-                setTimeout(() => {
-                    modelLoadingDiv.style.display = 'none';
-                    uploadZone.classList.remove('disabled');
-                }, 1000);
-                
-                return whisperPipeline;
-            } catch (error) {
-                console.error('Error loading model:', error);
-                document.getElementById('modelStatus').textContent = 'Error loading model. Please refresh and try again.';
-                uploadZone.classList.remove('disabled');
-                throw error;
-            } finally {
-                modelLoading = false;
-            }
-        }
-
-        function handleUploadClick() {
-            if (uploadZone.classList.contains('disabled')) return;
-            fileInput.click();
-        }
 
         function handleFileSelect(e) {
             const files = Array.from(e.target.files);
@@ -511,9 +505,8 @@
 
         function addFiles(files) {
             files.forEach(file => {
-                // Check reasonable file size (100MB browser limit)
                 if (file.size > 100 * 1024 * 1024) {
-                    alert(`${file.name} is too large. Please use files under 100MB for browser processing.`);
+                    alert(`${file.name} is too large. Please use files under 100MB.`);
                     return;
                 }
                 
@@ -527,12 +520,13 @@
                 }
             });
             updateFileList();
+            loadAudioDurations();
             startBtn.disabled = selectedFiles.length === 0;
         }
 
         function updateFileList() {
             fileList.innerHTML = '';
-            selectedFiles.forEach((fileObj, index) => {
+            selectedFiles.forEach((fileObj) => {
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
                 const durationText = fileObj.duration ? ` • ${Math.round(fileObj.duration)}s` : '';
@@ -564,51 +558,32 @@
         function getStatusText(status) {
             const statusMap = {
                 'waiting': 'Waiting',
-                'loading': 'Loading Model...',
-                'processing': 'Transcribing...',
+                'processing': 'Processing...',
                 'completed': 'Completed',
                 'error': 'Error'
             };
             return statusMap[status] || 'Unknown';
         }
 
-        window.clearFiles = function() {
-            selectedFiles.length = 0;
-            processedFiles.length = 0;
+        function clearFiles() {
+            selectedFiles = [];
+            processedFiles = [];
             updateFileList();
             startBtn.disabled = true;
             document.getElementById('downloadSection').style.display = 'none';
             updateProgress(0);
-        };
+        }
 
         function updateProgress(percentage) {
             document.getElementById('overallProgress').style.width = percentage + '%';
         }
 
-        window.startConversion = async function() {
+        async function startConversion() {
             if (selectedFiles.length === 0) return;
-
-            // Load model if not already loaded
-            try {
-                if (!whisperPipeline) {
-                    // Update all files to show loading status
-                    selectedFiles.forEach(fileObj => {
-                        fileObj.status = 'loading';
-                    });
-                    updateFileList();
-                    
-                    await loadWhisperModel();
-                }
-            } catch (error) {
-                alert('Failed to load AI model. Please check your internet connection and try again.');
-                return;
-            }
 
             startBtn.disabled = true;
             currentProcessing = 0;
-            processedFiles.length = 0;
-
-            const language = document.getElementById('languageSelect').value;
+            processedFiles = [];
 
             for (let i = 0; i < selectedFiles.length; i++) {
                 const fileObj = selectedFiles[i];
@@ -616,7 +591,13 @@
                 updateFileList();
 
                 try {
-                    const srtContent = await transcribeWithWhisper(fileObj.file, language);
+                    let srtContent;
+                    if (currentMethod === 'browser') {
+                        srtContent = await transcribeWithBrowserSpeech(fileObj.file);
+                    } else {
+                        srtContent = await generateManualTemplate(fileObj.file);
+                    }
+                    
                     fileObj.status = 'completed';
                     fileObj.srtContent = srtContent;
                     processedFiles.push(fileObj);
@@ -635,53 +616,105 @@
                 document.getElementById('downloadSection').style.display = 'block';
             }
             startBtn.disabled = false;
-        };
-
-        async function transcribeWithWhisper(audioFile, language) {
-            try {
-                // Convert file to audio data
-                const arrayBuffer = await audioFile.arrayBuffer();
-                
-                // Transcribe using Whisper
-                const result = await whisperPipeline(arrayBuffer, {
-                    language: language,
-                    return_timestamps: true,
-                    chunk_length_s: 30,
-                    stride_length_s: 5,
-                });
-
-                // Convert to SRT format
-                const srtContent = convertToSRT(result);
-                return srtContent;
-            } catch (error) {
-                console.error('Transcription error:', error);
-                throw new Error(`Transcription failed: ${error.message}`);
-            }
         }
 
-        function convertToSRT(transcriptionResult) {
-            let srt = '';
-            let segmentIndex = 1;
+        async function transcribeWithBrowserSpeech(audioFile) {
+            if (!recognition) {
+                throw new Error('Speech recognition not supported in this browser. Try Chrome or Edge.');
+            }
 
-            // Handle both chunk and non-chunk formats
-            const chunks = transcriptionResult.chunks || [{
-                text: transcriptionResult.text,
-                timestamp: [0, null]
-            }];
+            return new Promise(async (resolve, reject) => {
+                try {
+                    // Create audio element
+                    const audio = document.createElement('audio');
+                    const url = URL.createObjectURL(audioFile);
+                    audio.src = url;
 
-            chunks.forEach((chunk, index) => {
-                if (chunk.text && chunk.text.trim()) {
-                    const startTime = chunk.timestamp[0] || 0;
-                    const endTime = chunk.timestamp[1] || startTime + 5;
+                    let transcript = '';
+                    let segmentIndex = 1;
+                    let startTime = 0;
 
-                    srt += `${segmentIndex}\n`;
-                    srt += `${formatSRTTime(startTime)} --> ${formatSRTTime(endTime)}\n`;
-                    srt += `${chunk.text.trim()}\n\n`;
-                    segmentIndex++;
+                    recognition.lang = document.getElementById('speechLang').value;
+                    recognition.onresult = (event) => {
+                        let interimTranscript = '';
+                        for (let i = event.resultIndex; i < event.results.length; i++) {
+                            const result = event.results[i];
+                            if (result.isFinal) {
+                                const text = result[0].transcript.trim();
+                                if (text) {
+                                    const currentTime = audio.currentTime;
+                                    transcript += `${segmentIndex}\n`;
+                                    transcript += `${formatSRTTime(startTime)} --> ${formatSRTTime(currentTime)}\n`;
+                                    transcript += `${text}\n\n`;
+                                    segmentIndex++;
+                                    startTime = currentTime;
+                                }
+                            }
+                        }
+                    };
+
+                    recognition.onerror = (event) => {
+                        reject(new Error(`Speech recognition error: ${event.error}`));
+                    };
+
+                    recognition.onend = () => {
+                        URL.revokeObjectURL(url);
+                        if (transcript) {
+                            resolve(transcript);
+                        } else {
+                            resolve(generateManualTemplate(audioFile));
+                        }
+                    };
+
+                    // Play audio and start recognition
+                    audio.onloadedmetadata = () => {
+                        recognition.start();
+                        audio.play();
+                    };
+
+                    audio.onended = () => {
+                        recognition.stop();
+                    };
+
+                    audio.onerror = () => {
+                        reject(new Error('Failed to load audio file'));
+                    };
+
+                } catch (error) {
+                    reject(error);
                 }
             });
+        }
 
-            return srt || "1\n00:00:00,000 --> 00:00:05,000\n[No speech detected]\n\n";
+        async function generateManualTemplate(audioFile) {
+            return new Promise((resolve, reject) => {
+                const audio = document.createElement('audio');
+                const url = URL.createObjectURL(audioFile);
+                audio.src = url;
+
+                audio.addEventListener('loadedmetadata', () => {
+                    const duration = audio.duration;
+                    const segments = Math.ceil(duration / 10); // 10-second segments
+                    let srt = '';
+                    
+                    for (let i = 0; i < segments; i++) {
+                        const startTime = i * 10;
+                        const endTime = Math.min((i + 1) * 10, duration);
+                        
+                        srt += `${i + 1}\n`;
+                        srt += `${formatSRTTime(startTime)} --> ${formatSRTTime(endTime)}\n`;
+                        srt += `[Edit this text - Segment ${i + 1}]\n\n`;
+                    }
+                    
+                    URL.revokeObjectURL(url);
+                    resolve(srt);
+                });
+
+                audio.addEventListener('error', () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Failed to load audio file'));
+                });
+            });
         }
 
         function formatSRTTime(seconds) {
@@ -693,38 +726,6 @@
             return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')},${ms.toString().padStart(3, '0')}`;
         }
 
-        window.downloadAll = function() {
-            processedFiles.forEach(fileObj => {
-                if (fileObj.status === 'completed' && fileObj.srtContent) {
-                    const filename = fileObj.file.name.replace(/\.[^/.]+$/, '.srt');
-                    downloadSRT(fileObj.srtContent, filename);
-                }
-            });
-        };
-
-        function downloadSRT(content, filename) {
-            try {
-                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                // Clean up the URL object
-                setTimeout(() => {
-                    URL.revokeObjectURL(url);
-                }, 100);
-            } catch (error) {
-                console.error('Download error:', error);
-                alert('Download failed. Please try again.');
-            }
-        }
-
-        // Auto-load durations for cost estimation
         async function getAudioDuration(file) {
             return new Promise((resolve) => {
                 const audio = document.createElement('audio');
@@ -752,46 +753,60 @@
             }
         }
 
-            // Load durations when files are added
-            let durationLoadTimeout;
-            function addFilesWrapper(files) {
-                addFiles(files);
-                clearTimeout(durationLoadTimeout);
-                durationLoadTimeout = setTimeout(loadAudioDurations, 500);
-            }
-
-            // Override the addFiles calls
-            fileInput.addEventListener('change', (e) => {
-                const files = Array.from(e.target.files);
-                addFilesWrapper(files);
+        function downloadAll() {
+            processedFiles.forEach(fileObj => {
+                if (fileObj.status === 'completed' && fileObj.srtContent) {
+                    const filename = fileObj.file.name.replace(/\.[^/.]+$/, '.srt');
+                    downloadSRT(fileObj.srtContent, filename);
+                }
             });
-
-            uploadZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadZone.classList.remove('dragover');
-                if (uploadZone.classList.contains('disabled')) return;
-                
-                const files = Array.from(e.dataTransfer.files).filter(file => 
-                    file.type.startsWith('audio/') || 
-                    /\.(mp3|wav|m4a|ogg|flac|webm)$/i.test(file.name)
-                );
-                addFilesWrapper(files);
-            });
-        // Also add a test download button for debugging
-        window.testDownload = function() {
-            const testContent = "1\n00:00:00,000 --> 00:00:05,000\nThis is a test SRT file.\n\n2\n00:00:05,000 --> 00:00:10,000\nIf you can download this, the system works!\n\n";
-            downloadSRT(testContent, 'test.srt');
-        };
-
-        // Add HTTPS check for GitHub Pages
-        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-            console.warn('HTTPS required for some features. GitHub Pages should provide HTTPS automatically.');
         }
-    </script>
 
-    <!-- Add a test button for debugging (remove after testing) -->
-    <div style="position: fixed; bottom: 10px; right: 10px; z-index: 1000;">
-        <button onclick="testDownload()" style="background: #ff5722; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 12px;">Test Download</button>
-    </div>
+        function downloadSRT(content, filename) {
+            try {
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                }, 100);
+                
+                console.log(`Downloaded: ${filename}`);
+            } catch (error) {
+                console.error('Download error:', error);
+                alert(`Download failed for ${filename}. Please try again.`);
+            }
+        }
+
+        function testDownload() {
+            const testContent = `1
+00:00:00,000 --> 00:00:05,000
+This is a test SRT file from GitHub Pages.
+
+2
+00:00:05,000 --> 00:00:10,000
+If you can download this, the system works perfectly!
+
+3
+00:00:10,000 --> 00:00:15,000
+You can now use the full transcription features.
+`;
+            downloadSRT(testContent, 'test-github-pages.srt');
+            alert('Check your Downloads folder for "test-github-pages.srt"');
+        }
+
+        // Console logging for debugging
+        console.log('Page loaded successfully');
+        console.log('Speech recognition available:', !!recognition);
+        console.log('Current protocol:', location.protocol);
+        console.log('Current host:', location.host);
+    </script>
 </body>
 </html>
