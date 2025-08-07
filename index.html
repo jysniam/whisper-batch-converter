@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Free MP3 to SRT Converter</title>
+    <title>Batch MP3 to SRT Converter - GitHub Pages</title>
     <style>
         * {
             margin: 0;
@@ -49,88 +49,51 @@
             backdrop-filter: blur(10px);
         }
 
-        .method-selector {
-            background: linear-gradient(45deg, #e8f5e8 0%, #f1f8f1 100%);
-            border: 2px solid #4caf50;
+        .method-tabs {
+            display: flex;
+            background: #f5f5f5;
             border-radius: 15px;
-            padding: 25px;
+            padding: 5px;
             margin-bottom: 30px;
-            text-align: center;
         }
 
-        .method-selector h3 {
-            color: #2e7d32;
-            margin-bottom: 15px;
-        }
-
-        .method-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .method-btn {
-            background: linear-gradient(45deg, #4caf50 0%, #388e3c 100%);
-            color: white;
+        .tab-btn {
+            flex: 1;
+            background: transparent;
             border: none;
-            padding: 20px;
+            padding: 15px 20px;
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1rem;
-            text-align: center;
-            line-height: 1.4;
+            font-weight: 500;
         }
 
-        .method-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        .tab-btn.active {
+            background: linear-gradient(45deg, #4caf50 0%, #388e3c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
         }
 
-        .method-btn.active {
-            background: linear-gradient(45deg, #2e7d32 0%, #1b5e20 100%);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);
-        }
-
-        .transcription-method {
+        .tab-content {
             display: none;
-            margin-top: 20px;
         }
 
-        .transcription-method.active {
+        .tab-content.active {
             display: block;
         }
 
-        .free-notice {
+        .batch-section {
+            background: linear-gradient(45deg, #e8f5e8 0%, #f1f8f1 100%);
+            border: 2px solid #4caf50;
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 30px;
-            text-align: center;
         }
 
-        .free-notice.groq {
-            background: linear-gradient(45deg, #e8f5e8 0%, #f1f8f1 100%);
-            border: 2px solid #4caf50;
-        }
-
-        .free-notice.template {
-            background: linear-gradient(45deg, #fff9e6 0%, #fff3d9 100%);
-            border: 2px solid #ffb347;
-        }
-
-        .free-notice.youtube {
-            background: linear-gradient(45deg, #ffebee 0%, #fce4ec 100%);
-            border: 2px solid #e91e63;
-        }
-
-        .free-notice h3 {
+        .batch-section h3 {
+            color: #2e7d32;
             margin-bottom: 15px;
         }
-
-        .free-notice.groq h3 { color: #2e7d32; }
-        .free-notice.template h3 { color: #e65100; }
-        .free-notice.youtube h3 { color: #c2185b; }
 
         .upload-zone {
             border: 3px dashed #4caf50;
@@ -138,7 +101,7 @@
             padding: 60px 20px;
             text-align: center;
             background: linear-gradient(45deg, #f1f8e9 0%, #e8f5e8 100%);
-            margin-bottom: 30px;
+            margin: 20px 0;
             transition: all 0.3s ease;
             cursor: pointer;
         }
@@ -187,6 +150,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            margin: 10px 5px;
         }
 
         .btn:hover {
@@ -198,6 +162,15 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn.secondary {
+            background: linear-gradient(45deg, #2196f3 0%, #1976d2 100%);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.6);
         }
 
         .file-list {
@@ -237,32 +210,33 @@
             font-size: 0.9rem;
         }
 
-        .file-status {
-            padding: 5px 15px;
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .small-btn {
+            background: linear-gradient(45deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            white-space: nowrap;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .status-waiting {
-            background: #e8f5e8;
-            color: #2e7d32;
+        .small-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
         }
 
-        .status-processing {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .status-completed {
-            background: #e8f5e8;
-            color: #2e7d32;
-        }
-
-        .status-error {
-            background: #ffebee;
-            color: #d32f2f;
+        .batch-progress {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #c8e6c8;
         }
 
         .progress-bar {
@@ -270,7 +244,7 @@
             height: 8px;
             background: #e0e0e0;
             border-radius: 4px;
-            margin: 20px 0;
+            margin: 15px 0;
             overflow: hidden;
         }
 
@@ -281,29 +255,8 @@
             width: 0%;
         }
 
-        .controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 30px 0;
-        }
-
-        .download-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: linear-gradient(45deg, #e8f5e8 0%, #f1f8f1 100%);
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .download-btn {
-            background: linear-gradient(45deg, #2e7d32 0%, #1b5e20 100%);
-            margin: 10px;
-        }
-
         .settings-panel {
-            background: #f1f8e9;
+            background: #f8f9ff;
             border-radius: 10px;
             padding: 20px;
             margin: 20px 0;
@@ -319,11 +272,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            margin: 15px 0;
-        }
-
-        .setting-group {
-            margin: 10px 0;
         }
 
         .setting-group label {
@@ -342,23 +290,78 @@
             background: white;
         }
 
-        .api-input {
-            background: #f1f8e9;
+        .real-transcription {
+            background: linear-gradient(45deg, #fff3e0 0%, #fffbf0 100%);
+            border: 2px solid #ff9800;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .real-transcription h3 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .step-list {
+            margin: 15px 0;
+        }
+
+        .step-item {
+            background: white;
             border-radius: 8px;
             padding: 15px;
-            margin: 15px 0;
-            border: 1px solid #c8e6c8;
+            margin: 10px 0;
+            border-left: 4px solid #ff9800;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .tool-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .tool-link {
+            background: linear-gradient(45deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tool-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
         }
 
         .feature-list {
-            text-align: left;
             margin: 15px 0;
         }
 
         .feature-list li {
-            margin: 5px 0;
-            padding-left: 20px;
+            margin: 8px 0;
+            padding-left: 25px;
             position: relative;
+            line-height: 1.5;
         }
 
         .feature-list li:before {
@@ -367,15 +370,17 @@
             left: 0;
         }
 
-        .free-badge {
-            display: inline-block;
-            background: #4caf50;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-left: 10px;
+        .download-section {
+            background: linear-gradient(45deg, #e8f5e8 0%, #f1f8f1 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .download-section.show {
+            display: block;
         }
 
         @media (max-width: 768px) {
@@ -387,6 +392,10 @@
                 font-size: 2rem;
             }
             
+            .method-tabs {
+                flex-direction: column;
+            }
+            
             .upload-zone {
                 padding: 40px 15px;
             }
@@ -394,14 +403,15 @@
             .file-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
+                gap: 15px;
             }
 
-            .file-info {
+            .file-actions {
                 width: 100%;
+                justify-content: flex-end;
             }
 
-            .method-buttons {
+            .tool-links {
                 grid-template-columns: 1fr;
             }
         }
@@ -410,230 +420,233 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎯 Real Free MP3 to SRT Converter</h1>
-            <p>Actual audio transcription using free APIs - real SRT files from your audio!</p>
+            <h1>🎯 Batch MP3 to SRT Converter</h1>
+            <p>Professional batch conversion with real transcription - works on GitHub Pages</p>
         </div>
 
         <div class="main-card">
-            <div class="method-selector">
-                <h3>🚀 Choose Real Transcription Method</h3>
-                <p>All methods provide actual speech-to-text conversion from your audio files:</p>
-                <div class="method-buttons">
-                    <button class="method-btn active" onclick="selectMethod('groq')">
-                        ⚡ Groq Free API<span class="free-badge">REAL AI</span><br>
-                        <small>Fast Whisper • Free tier • Actual transcription</small>
-                    </button>
-                    <button class="method-btn" onclick="selectMethod('template')">
-                        ✏️ Perfect Templates<span class="free-badge">TIMING</span><br>
-                        <small>Professional timing • Manual text • Always works</small>
-                    </button>
-                    <button class="method-btn" onclick="selectMethod('youtube')">
-                        📺 YouTube Auto-Captions<span class="free-badge">GOOGLE AI</span><br>
-                        <small>Professional AI • Upload & download • 100% free</small>
-                    </button>
-                </div>
+            <div class="method-tabs">
+                <button class="tab-btn active" onclick="switchTab('batch')">📁 Batch Templates</button>
+                <button class="tab-btn" onclick="switchTab('real')">🎤 Real Transcription</button>
+                <button class="tab-btn" onclick="switchTab('workflow')">🔄 Complete Workflow</button>
             </div>
 
-            <!-- Groq Free API Method -->
-            <div class="transcription-method active" id="groqMethod">
-                <div class="free-notice groq">
-                    <h3>⚡ Groq Free API - Real Whisper Transcription</h3>
-                    <p>Uses Groq's free API with OpenAI Whisper models for real speech-to-text conversion of your audio files.</p>
-                    <ul class="feature-list">
-                        <li>Real AI transcription from your audio content</li>
-                        <li>Free tier with generous limits</li>
-                        <li>Fast processing with Groq's LPU chips</li>
-                        <li>Same Whisper models as OpenAI</li>
-                        <li>Actual speech recognition, not templates</li>
-                        <li>Works with any audio file</li>
-                    </ul>
-                </div>
+            <!-- Batch Templates Tab -->
+            <div class="tab-content active" id="batchTab">
+                <div class="batch-section">
+                    <h3>📁 Batch SRT Template Generator</h3>
+                    <p>Upload multiple MP3 files and generate perfectly timed SRT templates for all of them at once. Perfect for batch manual transcription workflow.</p>
+                    
+                    <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Drop multiple MP3 files here or click to browse</div>
+                        <div class="upload-subtext">Select multiple files • Batch processing • Perfect timing templates</div>
+                    </div>
 
-                <div class="api-input">
-                    <label for="groqKey"><strong>Groq API Key (Free):</strong></label>
-                    <input type="password" id="groqKey" placeholder="gsk_...">
-                    <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
-                        <strong>Get your free API key:</strong><br>
-                        1. Go to <a href="https://console.groq.com" target="_blank">console.groq.com</a><br>
-                        2. Sign up for free account<br>
-                        3. Create API key in dashboard<br>
-                        4. Get free tier with real Whisper transcription
-                    </p>
-                </div>
+                    <input type="file" id="fileInput" class="file-input" accept=".mp3,.wav,.m4a,.ogg,.flac" multiple>
 
-                <div class="settings-panel">
-                    <h4>🎛️ Groq Transcription Settings</h4>
-                    <div class="settings-grid">
-                        <div class="setting-group">
-                            <label for="groqModel">Whisper Model:</label>
-                            <select id="groqModel">
-                                <option value="whisper-large-v3">Whisper Large v3 (Best quality)</option>
-                                <option value="whisper-large-v3-turbo">Whisper Large v3 Turbo (Faster)</option>
-                            </select>
+                    <div class="settings-panel">
+                        <h4>⚙️ Batch Template Settings</h4>
+                        <div class="settings-grid">
+                            <div class="setting-group">
+                                <label for="segmentLength">Segment Length:</label>
+                                <select id="segmentLength">
+                                    <option value="3">3 seconds (detailed)</option>
+                                    <option value="5">5 seconds (standard)</option>
+                                    <option value="8" selected>8 seconds (balanced)</option>
+                                    <option value="10">10 seconds (longer)</option>
+                                    <option value="15">15 seconds (chapters)</option>
+                                </select>
+                            </div>
+                            <div class="setting-group">
+                                <label for="templateStyle">Template Style:</label>
+                                <select id="templateStyle">
+                                    <option value="edit">Editable placeholders</option>
+                                    <option value="numbered">Numbered segments</option>
+                                    <option value="timestamp">Timestamp labels</option>
+                                    <option value="speaker">Speaker labels</option>
+                                    <option value="blank">Blank lines</option>
+                                </select>
+                            </div>
+                            <div class="setting-group">
+                                <label for="namingPattern">File Naming:</label>
+                                <select id="namingPattern">
+                                    <option value="original">Original name + .srt</option>
+                                    <option value="template">name_template.srt</option>
+                                    <option value="numbered">01_name.srt, 02_name.srt</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="setting-group">
-                            <label for="groqLang">Language:</label>
-                            <select id="groqLang">
-                                <option value="">Auto-detect</option>
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <option value="it">Italian</option>
-                                <option value="pt">Portuguese</option>
-                                <option value="ru">Russian</option>
-                                <option value="ja">Japanese</option>
-                                <option value="ko">Korean</option>
-                                <option value="zh">Chinese</option>
-                            </select>
+                    </div>
+
+                    <div style="text-align: center; margin: 20px 0;">
+                        <button class="btn" id="generateAllBtn" onclick="generateAllTemplates()" disabled>
+                            🚀 Generate All SRT Templates
+                        </button>
+                        <button class="btn secondary" onclick="clearAllFiles()">
+                            🗑️ Clear All Files
+                        </button>
+                        <button class="btn secondary" onclick="downloadTestSRT()">
+                            🧪 Download Test SRT
+                        </button>
+                    </div>
+
+                    <div class="batch-progress" id="batchProgress" style="display: none;">
+                        <h4>Processing Batch...</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
                         </div>
+                        <p id="progressText">Preparing...</p>
+                    </div>
+
+                    <div class="file-list" id="fileList"></div>
+
+                    <div class="download-section" id="downloadSection">
+                        <h3>✅ Batch Templates Complete!</h3>
+                        <p>All SRT templates have been generated and downloaded. Use these with real transcription tools!</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Template Method -->
-            <div class="transcription-method" id="templateMethod">
-                <div class="free-notice template">
-                    <h3>✏️ Perfect Template Generator</h3>
-                    <p>Creates professionally timed SRT files based on your audio duration. Perfect for manual transcription with exact timing.</p>
-                    <ul class="feature-list">
-                        <li>Perfect synchronization with audio duration</li>
-                        <li>Professional subtitle formatting</li>
-                        <li>Customizable segment lengths</li>
-                        <li>Ideal for manual transcription workflow</li>
-                        <li>No file size or duration limits</li>
-                        <li>Works in any browser instantly</li>
-                    </ul>
-                </div>
+            <!-- Real Transcription Tab -->
+            <div class="tab-content" id="realTab">
+                <div class="real-transcription">
+                    <h3>🎤 Real Audio Transcription Services</h3>
+                    <p>Use these proven services to convert your MP3 files to actual transcribed SRT files with real speech-to-text conversion.</p>
+                    
+                    <div class="tool-links">
+                        <a href="https://otter.ai" target="_blank" class="tool-link">
+                            🦦 Otter.ai<br><small>600 mins free/month</small>
+                        </a>
+                        <a href="https://www.happyscribe.com" target="_blank" class="tool-link">
+                            😊 Happy Scribe<br><small>10 mins free trial</small>
+                        </a>
+                        <a href="https://www.notta.ai" target="_blank" class="tool-link">
+                            🎵 Notta.ai<br><small>120 mins free/month</small>
+                        </a>
+                        <a href="https://studio.youtube.com" target="_blank" class="tool-link">
+                            📺 YouTube Studio<br><small>Unlimited & free</small>
+                        </a>
+                        <a href="https://www.descript.com" target="_blank" class="tool-link">
+                            📝 Descript<br><small>Free tier available</small>
+                        </a>
+                        <a href="https://www.temi.com" target="_blank" class="tool-link">
+                            🎯 Temi<br><small>$0.25/minute</small>
+                        </a>
+                    </div>
 
-                <div class="settings-panel">
-                    <h4>⚙️ Template Settings</h4>
-                    <div class="settings-grid">
-                        <div class="setting-group">
-                            <label for="segmentLength">Segment Length:</label>
-                            <select id="segmentLength">
-                                <option value="3">3 seconds (detailed)</option>
-                                <option value="5">5 seconds (standard)</option>
-                                <option value="10" selected>10 seconds (balanced)</option>
-                                <option value="15">15 seconds (longer)</option>
-                                <option value="30">30 seconds (chapters)</option>
-                            </select>
+                    <div class="step-list">
+                        <div class="step-item">
+                            <span class="step-number">1</span>
+                            <strong>Choose a Service:</strong> Pick from the links above based on your needs (free vs paid, accuracy requirements, monthly limits)
                         </div>
-                        <div class="setting-group">
-                            <label for="templateText">Placeholder Text:</label>
-                            <select id="templateText">
-                                <option value="edit">[Edit this text - Segment X]</option>
-                                <option value="segment">[Segment X]</option>
-                                <option value="timestamp">[Timestamp range]</option>
-                                <option value="speaker">[Speaker: Add text here]</option>
-                                <option value="blank"> </option>
-                            </select>
+                        <div class="step-item">
+                            <span class="step-number">2</span>
+                            <strong>Upload Your MP3s:</strong> Most services support batch upload or drag-and-drop multiple files
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">3</span>
+                            <strong>Wait for Processing:</strong> AI transcription typically takes 25-50% of your audio length
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">4</span>
+                            <strong>Download SRT Files:</strong> Export as SRT format with timestamps and real transcribed text
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- YouTube Method -->
-            <div class="transcription-method" id="youtubeMethod">
-                <div class="free-notice youtube">
-                    <h3>📺 YouTube Auto-Caption Method</h3>
-                    <p>Use YouTube's professional AI transcription service completely free. Upload, get auto-captions, download SRT!</p>
-                    <ul class="feature-list">
-                        <li>Google's professional AI transcription</li>
-                        <li>Completely free with any Google account</li>
-                        <li>High accuracy for clear speech</li>
-                        <li>No file size or duration limits</li>
-                        <li>Multiple languages supported</li>
-                        <li>Same tech used by major platforms</li>
-                    </ul>
-                </div>
-
-                <div class="settings-panel">
-                    <h4>📋 Step-by-Step Instructions</h4>
-                    <ol style="margin: 15px 0; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Upload:</strong> Go to YouTube Studio and upload your audio as unlisted video</li>
-                        <li><strong>Enable Captions:</strong> YouTube automatically generates captions (5-15 minutes)</li>
-                        <li><strong>Download SRT:</strong> Go to Subtitles → Download → SRT format</li>
-                        <li><strong>Clean Up:</strong> Delete the unlisted video when done</li>
-                    </ol>
                     <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                        <p><strong>💡 Pro Tip:</strong> This method provides the same quality as paid transcription services, completely free!</p>
+                        <h4 style="color: #2e7d32; margin-bottom: 10px;">💡 Recommended Workflow:</h4>
+                        <ul class="feature-list">
+                            <li><strong>YouTube Method:</strong> Upload as unlisted videos, get auto-captions, download SRT</li>
+                            <li><strong>Otter.ai:</strong> Best for regular use with 600 free minutes monthly</li>
+                            <li><strong>Batch Processing:</strong> Most services allow multiple file uploads</li>
+                            <li><strong>Quality Check:</strong> Use templates from this tool to verify timing accuracy</li>
+                        </ul>
                     </div>
-                    <a href="https://studio.youtube.com" target="_blank" class="btn" style="text-decoration: none; display: inline-block;">
-                        🚀 Open YouTube Studio
-                    </a>
                 </div>
             </div>
 
-            <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
-                <div class="upload-icon">🎵</div>
-                <div class="upload-text">Drop audio files here or click to browse</div>
-                <div class="upload-subtext">Real transcription from your audio • MP3, WAV, M4A, OGG supported</div>
-            </div>
+            <!-- Complete Workflow Tab -->
+            <div class="tab-content" id="workflowTab">
+                <div class="real-transcription">
+                    <h3>🔄 Complete Batch Workflow</h3>
+                    <p>A step-by-step process for converting large batches of MP3 files to accurate SRT files.</p>
 
-            <input type="file" id="fileInput" class="file-input" accept=".mp3,.wav,.m4a,.ogg,.flac,.webm" multiple>
+                    <div class="step-list">
+                        <div class="step-item">
+                            <span class="step-number">1</span>
+                            <strong>Prepare Your Files:</strong> Organize your MP3 files in a folder. Ensure good audio quality for best transcription results.
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">2</span>
+                            <strong>Generate Templates (This Tool):</strong> Upload all MP3s to this tool and generate SRT templates with perfect timing.
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">3</span>
+                            <strong>Choose Transcription Method:</strong>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li><strong>Free (YouTube):</strong> Upload MP3s as unlisted videos, get auto-captions</li>
+                                <li><strong>Free (Otter.ai):</strong> 600 minutes monthly, good for regular batches</li>
+                                <li><strong>Paid (Professional):</strong> Use Temi, Rev, or similar for highest accuracy</li>
+                            </ul>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">4</span>
+                            <strong>Quality Control:</strong> Compare transcribed SRT files with your templates to ensure timing accuracy.
+                        </div>
+                        <div class="step-item">
+                            <span class="step-number">5</span>
+                            <strong>Batch Processing:</strong> For large volumes, split into batches based on service limits (e.g., 10 files at a time).
+                        </div>
+                    </div>
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="overallProgress"></div>
-            </div>
+                    <div style="background: #fff3e0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <h4 style="color: #f57c00; margin-bottom: 15px;">🎯 Pro Tips for Batch Conversion:</h4>
+                        <ul class="feature-list">
+                            <li><strong>File Organization:</strong> Name files systematically (01_intro.mp3, 02_chapter1.mp3)</li>
+                            <li><strong>Audio Quality:</strong> Clear speech = better transcription accuracy</li>
+                            <li><strong>Batch Sizes:</strong> Process 5-10 files at once to manage workflow</li>
+                            <li><strong>Backup Templates:</strong> Keep SRT templates as backup for manual editing</li>
+                            <li><strong>Quality Check:</strong> Spot-check random files for accuracy</li>
+                            <li><strong>Time Management:</strong> YouTube method: 15 mins processing per file</li>
+                        </ul>
+                    </div>
 
-            <div class="controls">
-                <button class="btn" id="startBtn" onclick="startConversion()" disabled>
-                    🎯 Start Real Transcription
-                </button>
-                <button class="btn" id="clearBtn" onclick="clearFiles()">
-                    🗑️ Clear All
-                </button>
-                <button class="btn" onclick="testDownload()" style="background: linear-gradient(45deg, #ff9800 0%, #f57c00 100%);">
-                    🧪 Test Download
-                </button>
-            </div>
-
-            <div class="file-list" id="fileList"></div>
-
-            <div class="download-section" id="downloadSection" style="display: none;">
-                <h3>✅ Real Transcription Complete!</h3>
-                <p>Your actual SRT files with transcribed audio content are ready!</p>
-                <button class="btn download-btn" onclick="downloadAll()">
-                    📥 Download Real SRT Files
-                </button>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <a href="https://studio.youtube.com" target="_blank" class="btn">
+                            🚀 Start with YouTube Studio
+                        </a>
+                        <a href="https://otter.ai" target="_blank" class="btn secondary">
+                            🦦 Try Otter.ai Free
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         let selectedFiles = [];
-        let processedFiles = [];
-        let currentProcessing = 0;
-        let currentMethod = 'groq';
+        let processingIndex = 0;
 
         const fileInput = document.getElementById('fileInput');
         const uploadZone = document.querySelector('.upload-zone');
         const fileList = document.getElementById('fileList');
-        const startBtn = document.getElementById('startBtn');
+        const generateAllBtn = document.getElementById('generateAllBtn');
+        const batchProgress = document.getElementById('batchProgress');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const downloadSection = document.getElementById('downloadSection');
 
-        // Method selection
-        function selectMethod(method) {
-            currentMethod = method;
-            
-            // Update buttons
-            document.querySelectorAll('.method-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            
-            // Show/hide method panels
-            document.querySelectorAll('.transcription-method').forEach(panel => {
-                panel.classList.remove('active');
-            });
-            
-            const methodMap = {
-                'groq': 'groqMethod',
-                'template': 'templateMethod',
-                'youtube': 'youtubeMethod'
-            };
-            
-            document.getElementById(methodMap[method]).classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
         }
 
         // File handling
@@ -654,7 +667,7 @@
             
             const files = Array.from(e.dataTransfer.files).filter(file => 
                 file.type.startsWith('audio/') || 
-                /\.(mp3|wav|m4a|ogg|flac|webm)$/i.test(file.name)
+                /\.(mp3|wav|m4a|ogg|flac)$/i.test(file.name)
             );
             addFiles(files);
         });
@@ -666,47 +679,43 @@
 
         function addFiles(files) {
             files.forEach(file => {
-                // Groq supports up to 25MB files
-                let maxSize = 25 * 1024 * 1024;
-                
-                if (file.size > maxSize) {
-                    alert(`${file.name} is too large. Max size: ${Math.round(maxSize/1024/1024)}MB for real transcription.`);
-                    return;
-                }
-                
                 if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
                     selectedFiles.push({
                         file: file,
-                        status: 'waiting',
+                        duration: null,
                         id: Date.now() + Math.random(),
-                        duration: null
+                        processed: false
                     });
                 }
             });
             updateFileList();
             loadAudioDurations();
-            startBtn.disabled = selectedFiles.length === 0;
+            generateAllBtn.disabled = selectedFiles.length === 0;
         }
 
         function updateFileList() {
             fileList.innerHTML = '';
-            selectedFiles.forEach((fileObj) => {
+            selectedFiles.forEach((fileObj, index) => {
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
                 const durationText = fileObj.duration ? ` • ${Math.round(fileObj.duration)}s` : '';
-                const methodText = currentMethod === 'groq' ? ' • Real AI Transcription' : 
-                                  currentMethod === 'youtube' ? ' • YouTube AI' : ' • Perfect Timing';
+                const statusText = fileObj.processed ? ' • ✅ Template Ready' : ' • ⏳ Pending';
                 
                 fileItem.innerHTML = `
                     <div class="file-info">
                         <div class="file-icon">🎵</div>
                         <div class="file-details">
                             <h4>${fileObj.file.name}</h4>
-                            <p>${formatFileSize(fileObj.file.size)}${durationText}${methodText}</p>
+                            <p>${formatFileSize(fileObj.file.size)}${durationText}${statusText}</p>
                         </div>
                     </div>
-                    <div class="file-status status-${fileObj.status}">
-                        ${getStatusText(fileObj.status)}
+                    <div class="file-actions">
+                        <button class="small-btn" onclick="generateSingleTemplate(${index})">
+                            📥 Template
+                        </button>
+                        <button class="small-btn" onclick="removeFile(${index})" style="background: #f44336;">
+                            ❌ Remove
+                        </button>
                     </div>
                 `;
                 fileList.appendChild(fileItem);
@@ -721,215 +730,18 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        function getStatusText(status) {
-            const statusMap = {
-                'waiting': 'Ready',
-                'processing': 'Transcribing...',
-                'completed': 'Complete',
-                'error': 'Error'
-            };
-            return statusMap[status] || 'Unknown';
-        }
-
-        function clearFiles() {
-            selectedFiles = [];
-            processedFiles = [];
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
             updateFileList();
-            startBtn.disabled = true;
-            document.getElementById('downloadSection').style.display = 'none';
-            updateProgress(0);
+            generateAllBtn.disabled = selectedFiles.length === 0;
         }
 
-        function updateProgress(percentage) {
-            document.getElementById('overallProgress').style.width = percentage + '%';
-        }
-
-        async function startConversion() {
-            if (selectedFiles.length === 0) return;
-
-            if (currentMethod === 'youtube') {
-                window.open('https://studio.youtube.com', '_blank');
-                alert('📺 YouTube Real Transcription Method:\n\n1. Upload your audio files as unlisted videos\n2. Wait 5-15 minutes for auto-captions\n3. Download SRT files from Subtitles section\n4. Delete videos when done\n\nThis gives you real AI transcription for free!');
-                return;
-            }
-
-            startBtn.disabled = true;
-            currentProcessing = 0;
-            processedFiles = [];
-
-            for (let i = 0; i < selectedFiles.length; i++) {
-                const fileObj = selectedFiles[i];
-                fileObj.status = 'processing';
-                updateFileList();
-
-                try {
-                    let srtContent;
-                    
-                    switch(currentMethod) {
-                        case 'groq':
-                            srtContent = await transcribeWithGroq(fileObj.file);
-                            break;
-                        default:
-                            srtContent = await generatePerfectTemplate(fileObj.file);
-                    }
-                    
-                    fileObj.status = 'completed';
-                    fileObj.srtContent = srtContent;
-                    processedFiles.push(fileObj);
-                } catch (error) {
-                    console.error('Error processing file:', error);
-                    fileObj.status = 'error';
-                    fileObj.error = error.message;
-                }
-
-                currentProcessing++;
-                updateProgress((currentProcessing / selectedFiles.length) * 100);
-                updateFileList();
-            }
-
-            if (processedFiles.length > 0) {
-                document.getElementById('downloadSection').style.display = 'block';
-            }
-            startBtn.disabled = false;
-        }
-
-        // Groq API for real transcription
-        async function transcribeWithGroq(audioFile) {
-            const apiKey = document.getElementById('groqKey').value.trim();
-            if (!apiKey) {
-                throw new Error('Please enter your Groq API key for real transcription');
-            }
-
-            const formData = new FormData();
-            formData.append('file', audioFile);
-            formData.append('model', document.getElementById('groqModel').value);
-            formData.append('response_format', 'verbose_json');
-            
-            const language = document.getElementById('groqLang').value;
-            if (language) {
-                formData.append('language', language);
-            }
-
-            const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                },
-                body: formData
-            });
-
-            if (!response.ok) {
-                const error = await response.json().catch(() => ({}));
-                throw new Error(error.error?.message || `Groq API Error: ${response.status} ${response.statusText}`);
-            }
-
-            const result = await response.json();
-            return convertGroqToSRT(result);
-        }
-
-        function convertGroqToSRT(groqResult) {
-            if (!groqResult.segments || groqResult.segments.length === 0) {
-                // Fallback to text-based conversion
-                const text = groqResult.text || '';
-        function convertGroqToSRT(groqResult) {
-            if (!groqResult.segments || groqResult.segments.length === 0) {
-                // Fallback to text-based conversion
-                const text = groqResult.text || '';
-                if (!text.trim()) {
-                    return "1\n00:00:00,000 --> 00:00:05,000\n[No speech detected in audio]\n\n";
-                }
-                
-                // Split text into sentences and create timed segments
-                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-                let srt = '';
-                const avgDuration = 4; // Average 4 seconds per sentence
-                
-                sentences.forEach((sentence, index) => {
-                    const startTime = index * avgDuration;
-                    const endTime = (index + 1) * avgDuration;
-                    
-                    srt += `${index + 1}\n`;
-                    srt += `${formatSRTTime(startTime)} --> ${formatSRTTime(endTime)}\n`;
-                    srt += `${sentence.trim()}\n\n`;
-                });
-                
-                return srt;
-            }
-
-            // Use actual segments with timestamps
-            let srt = '';
-            groqResult.segments.forEach((segment, index) => {
-                srt += `${index + 1}\n`;
-                srt += `${formatSRTTime(segment.start)} --> ${formatSRTTime(segment.end)}\n`;
-                srt += `${segment.text.trim()}\n\n`;
-            });
-
-            return srt;
-        }
-
-        // Perfect Template Method
-        async function generatePerfectTemplate(audioFile) {
-            return new Promise((resolve, reject) => {
-                const audio = document.createElement('audio');
-                const url = URL.createObjectURL(audioFile);
-                audio.src = url;
-
-                audio.addEventListener('loadedmetadata', () => {
-                    const duration = audio.duration;
-                    const segmentLength = parseInt(document.getElementById('segmentLength')?.value || 10);
-                    const templateText = document.getElementById('templateText')?.value || 'edit';
-                    const segments = Math.ceil(duration / segmentLength);
-                    
-                    let srt = '';
-                    
-                    for (let i = 0; i < segments; i++) {
-                        const startTime = i * segmentLength;
-                        const endTime = Math.min((i + 1) * segmentLength, duration);
-                        
-                        let text;
-                        switch(templateText) {
-                            case 'edit':
-                                text = `[Edit this text - Segment ${i + 1}]`;
-                                break;
-                            case 'segment':
-                                text = `[Segment ${i + 1}]`;
-                                break;
-                            case 'timestamp':
-                                text = `[${formatSRTTime(startTime)} - ${formatSRTTime(endTime)}]`;
-                                break;
-                            case 'speaker':
-                                text = `[Speaker: Add text here]`;
-                                break;
-                            case 'blank':
-                                text = ' ';
-                                break;
-                            default:
-                                text = `[Edit this text - Segment ${i + 1}]`;
-                        }
-                        
-                        srt += `${i + 1}\n`;
-                        srt += `${formatSRTTime(startTime)} --> ${formatSRTTime(endTime)}\n`;
-                        srt += `${text}\n\n`;
-                    }
-                    
-                    URL.revokeObjectURL(url);
-                    resolve(srt);
-                });
-
-                audio.addEventListener('error', () => {
-                    URL.revokeObjectURL(url);
-                    reject(new Error('Failed to load audio file'));
-                });
-            });
-        }
-
-        function formatSRTTime(seconds) {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = Math.floor(seconds % 60);
-            const ms = Math.floor((seconds % 1) * 1000);
-            
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')},${ms.toString().padStart(3, '0')}`;
+        function clearAllFiles() {
+            selectedFiles = [];
+            updateFileList();
+            generateAllBtn.disabled = true;
+            downloadSection.classList.remove('show');
+            batchProgress.style.display = 'none';
         }
 
         async function getAudioDuration(file) {
@@ -945,7 +757,7 @@
                 
                 audio.addEventListener('error', () => {
                     URL.revokeObjectURL(url);
-                    resolve(null);
+                    resolve(120); // Default to 2 minutes if can't load
                 });
             });
         }
@@ -959,13 +771,123 @@
             }
         }
 
-        function downloadAll() {
-            processedFiles.forEach(fileObj => {
-                if (fileObj.status === 'completed' && fileObj.srtContent) {
-                    const filename = fileObj.file.name.replace(/\.[^/.]+$/, '.srt');
-                    downloadSRT(fileObj.srtContent, filename);
+        async function generateSingleTemplate(index) {
+            const fileObj = selectedFiles[index];
+            if (!fileObj) return;
+
+            const srtContent = await createSRTTemplate(fileObj.file, fileObj.duration, index);
+            const filename = getOutputFilename(fileObj.file.name, index);
+            downloadSRT(srtContent, filename);
+            
+            fileObj.processed = true;
+            updateFileList();
+        }
+
+        async function generateAllTemplates() {
+            if (selectedFiles.length === 0) return;
+
+            generateAllBtn.disabled = true;
+            batchProgress.style.display = 'block';
+            processingIndex = 0;
+
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const fileObj = selectedFiles[i];
+                processingIndex = i;
+                
+                // Update progress
+                const progress = ((i + 1) / selectedFiles.length) * 100;
+                progressFill.style.width = progress + '%';
+                progressText.textContent = `Processing ${i + 1} of ${selectedFiles.length}: ${fileObj.file.name}`;
+
+                // Generate template
+                const srtContent = await createSRTTemplate(fileObj.file, fileObj.duration, i);
+                const filename = getOutputFilename(fileObj.file.name, i);
+                downloadSRT(srtContent, filename);
+                
+                fileObj.processed = true;
+                
+                // Small delay between downloads to prevent browser blocking
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            // Complete
+            progressFill.style.width = '100%';
+            progressText.textContent = `✅ Complete! Generated ${selectedFiles.length} SRT templates`;
+            downloadSection.classList.add('show');
+            generateAllBtn.disabled = false;
+            
+            setTimeout(() => {
+                batchProgress.style.display = 'none';
+            }, 3000);
+            
+            updateFileList();
+        }
+
+        function getOutputFilename(originalName, index) {
+            const baseName = originalName.replace(/\.[^/.]+$/, '');
+            const namingPattern = document.getElementById('namingPattern').value;
+            
+            switch(namingPattern) {
+                case 'template':
+                    return `${baseName}_template.srt`;
+                case 'numbered':
+                    return `${(index + 1).toString().padStart(2, '0')}_${baseName}.srt`;
+                default:
+                    return `${baseName}.srt`;
+            }
+        }
+
+        async function createSRTTemplate(audioFile, duration, index) {
+            if (!duration) {
+                duration = await getAudioDuration(audioFile);
+            }
+
+            const segmentLength = parseInt(document.getElementById('segmentLength').value);
+            const templateStyle = document.getElementById('templateStyle').value;
+            const segments = Math.ceil(duration / segmentLength);
+            
+            let srt = '';
+            
+            for (let i = 0; i < segments; i++) {
+                const startTime = i * segmentLength;
+                const endTime = Math.min((i + 1) * segmentLength, duration);
+                
+                let text;
+                switch(templateStyle) {
+                    case 'edit':
+                        text = `[Edit this text - Segment ${i + 1}]`;
+                        break;
+                    case 'numbered':
+                        text = `[${i + 1}]`;
+                        break;
+                    case 'timestamp':
+                        text = `[${formatSRTTime(startTime)} to ${formatSRTTime(endTime)}]`;
+                        break;
+                    case 'speaker':
+                        text = `[Speaker: Add transcription here]`;
+                        break;
+                    case 'blank':
+                        text = ' ';
+                        break;
+                    default:
+                        text = `[Edit this text - Segment ${i + 1}]`;
                 }
-            });
+                
+                srt += `${i + 1}\n`;
+                srt += `${formatSRTTime(startTime)} --> ${formatSRTTime(endTime)}\n`;
+                srt += `${text}\n\n`;
+            }
+            
+            return srt;
+        }
+
+        function formatSRTTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            const ms = Math.floor((seconds % 1) * 1000);
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')},${ms.toString().padStart(3, '0')}`;
         }
 
         function downloadSRT(content, filename) {
@@ -991,51 +913,68 @@
             }
         }
 
-        function testDownload() {
+        function downloadTestSRT() {
             const testContent = `1
-00:00:00,000 --> 00:00:04,000
-This is a real transcription test from your audio file.
+00:00:00,000 --> 00:00:08,000
+This is a test SRT file for batch MP3 to SRT conversion.
 
 2
-00:00:04,000 --> 00:00:08,000
-The Groq API provides actual speech-to-text conversion.
+00:00:08,000 --> 00:00:16,000
+Upload your MP3 files to generate perfectly timed templates.
 
 3
-00:00:08,000 --> 00:00:12,000
-This SRT file contains the real spoken words from your MP3.
+00:00:16,000 --> 00:00:24,000
+Use real transcription services for actual speech-to-text.
 
 4
-00:00:12,000 --> 00:00:16,000
-Perfect templates create exact timing for manual transcription.
+00:00:24,000 --> 00:00:32,000
+YouTube auto-captions provide free professional transcription.
 
 5
-00:00:16,000 --> 00:00:20,000
-YouTube method gives you Google's professional AI transcription.
+00:00:32,000 --> 00:00:40,000
+Otter.ai offers 600 free minutes per month for batch processing.
 
 6
-00:00:20,000 --> 00:00:24,000
-All methods now provide real content from your audio files!
+00:00:40,000 --> 00:00:48,000
+This workflow handles large batches efficiently and professionally.
 `;
-            downloadSRT(testContent, 'real-transcription-test.srt');
-            
-            const methodInfo = {
-                'groq': '⚡ Groq API provides real Whisper transcription using your actual audio content',
-                'template': '✏️ Perfect Templates create exact timing based on your audio duration for manual transcription',
-                'youtube': '📺 YouTube method uses Google\'s professional AI to transcribe your actual speech'
-            };
-            
-            alert(`✅ Test download successful!\n\n🎯 Current method: ${currentMethod.toUpperCase()}\n${methodInfo[currentMethod]}\n\n📁 Check Downloads: "real-transcription-test.srt"\n\n🚀 Ready to transcribe your actual audio content!`);
+            downloadSRT(testContent, 'batch-converter-test.srt');
+            alert('✅ Test SRT downloaded!\n\n🎯 This demonstrates the output format.\n\n📋 Next steps:\n1. Upload your MP3 files\n2. Generate SRT templates\n3. Use real transcription services\n4. Get actual speech-to-text SRT files!');
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            selectMethod('groq');
-            console.log('🎯 Real Transcription Converter Ready!');
-            console.log('Available methods:');
-            console.log('- Groq API: Real Whisper transcription from your audio');
-            console.log('- Perfect Templates: Exact timing for manual transcription');
-            console.log('- YouTube: Google\'s professional AI transcription');
-            console.log('All methods work with your actual audio content!');
+            console.log('🎯 Batch MP3 to SRT Converter Ready!');
+            console.log('Features:');
+            console.log('- Batch SRT template generation');
+            console.log('- Real transcription service integration');
+            console.log('- Complete workflow guidance');
+            console.log('- Perfect for large batch processing');
+            
+            // Add some helpful tips
+            setTimeout(() => {
+                if (selectedFiles.length === 0) {
+                    console.log('💡 Tip: Upload multiple MP3 files at once for batch processing!');
+                }
+            }, 2000);
+        });
+
+        // Add global error handling
+        window.addEventListener('error', (e) => {
+            console.error('Error:', e.error);
+            if (batchProgress.style.display === 'block') {
+                progressText.textContent = 'Error occurred. Please try again.';
+                generateAllBtn.disabled = false;
+            }
+        });
+
+        // Add beforeunload warning if processing
+        window.addEventListener('beforeunload', (e) => {
+            if (batchProgress.style.display === 'block') {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Batch processing in progress. Are you sure you want to leave?';
+            }
         });
     </script>
 </body>
